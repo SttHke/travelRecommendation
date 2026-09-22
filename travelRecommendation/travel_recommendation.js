@@ -2,70 +2,66 @@ import Fuse from fuse.js;
 
 // API laden
 async function loadAPI() {
-    let allRecommendations = [];               // <-- sichtbar für die ganze Funktion
+    let allRecommendations = [];               
     try {
         const response = await fetch("https://127.0.0.1:8080/travel_recommendation_api.json");
         const data = await response.json();
 
-        // Die drei Arrays zusammenführen
+        // Arrays aus der JSON zusammenführen
         allRecommendations = [
             ...data.temples,
-            ...data.countries.flatMap(c => c.cities), // flatten countries → cities
+            ...data.countries.flatMap(c => c.cities),
             ...data.beaches
         ];
     } catch (error) {
         console.error("Fehler:", error);
     }
-    return allRecommendations;                  // immer ein Array zurückgeben
+    return allRecommendations;        
 }
 
 
 
 //Suchfunktion
-// --- 1. Fuse‑Instanz erzeugen (nur einmal) ---------------------------------
-let fuse;                     // globale Variable, damit wir sie wiederverwenden können
+// 1. Fuse‑Instanz erzeugen
+let fuse;                     // globale Variable
 
 async function initFuse() {
     const recommendations = await loadAPI();
 
-    // Optionen: wir durchsuchen nur das Feld "name"
-    // - `threshold: 0.3` → Wie „unscharf“ die Suche sein darf
-    //   (0 = exakte Übereinstimmung, 1 = alles passt)
-    // - `ignoreLocation: true` → Position im Wort spielt keine Rolle
     const options = {
-        keys: ["name"],
+        keys: ["name"], //welches Feld wird durchsucht
         includeScore: true,
-        threshold: 0.3,
-        ignoreLocation: true
+        threshold: 0.3, //wieviel Übereinstimmung ist erforderlich?
+        ignoreLocation: true //Position des Suchsbegriffs innerhalb des durchsuchten Feldes ist egal
     };
 
     fuse = new Fuse(recommendations, options);
 }
 
-// --- 2. eigentliche Suchfunktion --------------------------------------------
+// Suchfunktion
 async function searchRecommendations() {
     const input = document.getElementById("suchEingabe").value.trim();
 
-    // Falls das Input‑Feld leer ist, nichts anzeigen
+    // Keine Angabe, wenn Input leer ist.
     if (input === "") {
         document.getElementById("results").innerHTML = "";
         return;
     }
 
-    // Sicherstellen, dass Fuse bereits initialisiert ist
+    // Sicherstellen, dass Fuse initialisiert wird
     if (!fuse) {
-        await initFuse();               // lädt JSON und baut Fuse‑Index
+        await initFuse();              
     }
 
-    // Fuse liefert ein Array von Objekten `{ item, score }`
+    // Definition des Suchergebnisses
     const result = fuse.search(input);
 
-    // Wir geben nur die eigentlichen Items (die Empfehlungen) zurück
+    // Filtern der Ausgabe
     const filtered = result.map(r => r.item);
 
-    // --- Ausgabe ---
+    // Ausgabe
     const resultsContainer = document.getElementById("results");
-    resultsContainer.innerHTML = "";      // vorherige Ergebnisse leeren
+    resultsContainer.innerHTML = "";  
 
     if (filtered.length === 0) {
         resultsContainer.innerHTML = "<p>Keine Ergebnisse gefunden.</p>";
@@ -75,7 +71,6 @@ async function searchRecommendations() {
     filtered.forEach(item => {
         const div = document.createElement("div");
         div.classList.add("result-item");
-        // kleiner Fix: fehlendes "=" nach src
         div.innerHTML = `
             <h3>${item.name}</h3>
             <img src="${item.imageUrl}" alt="${item.name}" style="width:200px;">
@@ -84,7 +79,7 @@ async function searchRecommendations() {
     });
 }
 
-// Buttons verbinden (wie gehabt)
+// Buttons verbinden
 document.getElementById("suchButton").addEventListener("click", searchRecommendations);
 document.getElementById("resetButton").addEventListener("click", () => {
    document.getElementById("suchEingabe").value = "";
