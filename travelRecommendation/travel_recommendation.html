@@ -11,15 +11,29 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
         <link rel="stylesheet" href="css/style.css">
+
+        <style>
+            body {
+                /* Bild aus dem gleichen Ordner laden */
+                background-image: url('Flugzeug.jpg');
+
+                /* Bildgröße anpassen */
+                background-size: 30% auto;          /* skaliert die Bildgröße */
+                background-repeat: no-repeat;   /* kein Kacheln */
+                background-position: center;    /* zentriert */
+                background-attachment: fixed;   /* Bild bleibt beim Scrollen fixiert (optional) */
+                margin: 0;                       /* ggf. gewünschten Abstand entfernen */
+            }
+        </style>
     </head>
 
     <body>
         <nav>
 
             <div class="Pages">
-                <a href="#" id="Startseite-Link">Startseite</a>
-                <a href="#" id="UeberUns-Link">Über uns</a>
-                <a href="#" id="Kontakt-Link">Kontaktieren Sie uns</a>  
+                <a href="travel_recommendation.html">Startseite</a>
+                <a href="Ueberuns.html">Über uns</a>
+                <a href="Kontakt.html">Kontaktieren Sie uns</a>  
             </div>
 
             <div class="Suchleiste">
@@ -30,6 +44,12 @@
 
         </nav>
 
+        <div id="results"></div>
+
+        <header class="website-title">
+            <h1>TravelBloom - Reiseempfehlungen</h1>
+        </header>
+
         <section class="Startseite">
             <div class="overlay"></div>
     
@@ -37,13 +57,18 @@
                 <h1>Willkommen!</h1>
     
                 <p class="intro">
-                    Willkommen auf unserer Seite für Reiseempfehlungen. Unter "Über uns" können Sie weitergehende Informationen über unser Unternehmen einsehen. Unsere Suchleiste erleichtert Ihnen das Auffinden aktueller Reise-Empfehlungen. 
+                    Willkommen auf unserer Seite für Reiseempfehlungen. Unter "Über uns" können Sie weitergehende Informationen über unser Unternehmen einsehen. 
+                    Unsere Suchleiste erleichtert Ihnen das Auffinden aktueller Reise-Empfehlungen. 
                     Schauen Sie sich gerne um und kontaktieren Sie uns bei Bedarf über unsere Kontakt-Seite.
                 </p>
             </div>
-
             
         </section>
-    </body>    
+
+    </body> 
+            <!-- Fuse.js – leichtgewichtige fuzzy‑search Bibliothek -->
+        <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.5.0/"></script>
+
+        <script src="https://127.0.0.1:8080/travel_recommendation.js" defer></script>
 
 </html>
